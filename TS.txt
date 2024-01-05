@@ -92,3 +92,69 @@ std::ostream& operator<<(std::ostream out, const std::string str)
 
 logger.Debug() << “Hello world” << std::endl;
 logger.Info() << “Hello world” << std::endl;
+
+
+
+
+Для парсинга строки конфигурации "file=/tmp/test.log,lev=6,date,trunc=10M" в C++, вы можете использовать стандартные средства работы со строками и потоками. Вот пример простого парсинга:
+
+```cpp
+#include <iostream>
+#include <sstream>
+#include <string>
+
+struct LoggerConfig {
+    std::string filePath;
+    int logLevel;
+    bool includeDate;
+    size_t bufferSize;
+    size_t fileSizeLimit;
+};
+
+LoggerConfig parseConfig(const std::string& configString) {
+    LoggerConfig config;
+
+    std::istringstream iss(configString);
+    std::string token;
+
+    while (std::getline(iss, token, ',')) {
+        size_t equalsPos = token.find('=');
+        std::string key = token.substr(0, equalsPos);
+        std::string value = token.substr(equalsPos + 1);
+
+        if (key == "file") {
+            config.filePath = value;
+        } else if (key == "lev") {
+            config.logLevel = std::stoi(value);
+        } else if (key == "date") {
+            config.includeDate = true;
+        } else if (key == "trunc") {
+            size_t unitPos = value.find_last_not_of("0123456789");
+            size_t size = std::stoi(value.substr(0, unitPos + 1));
+            std::string unit = value.substr(unitPos + 1);
+
+            if (unit == "M") {
+                config.fileSizeLimit = size * 1024 * 1024; // Convert to megabytes
+            }
+        }
+        // Add more conditions for other configuration parameters if needed
+    }
+
+    return config;
+}
+
+int main() {
+    std::string configString = "file=/tmp/test.log,lev=6,date,trunc=10M";
+    LoggerConfig config = parseConfig(configString);
+
+    // Now you can use the parsed configuration
+    std::cout << "File Path: " << config.filePath << std::endl;
+    std::cout << "Log Level: " << config.logLevel << std::endl;
+    std::cout << "Include Date: " << std::boolalpha << config.includeDate << std::endl;
+    std::cout << "File Size Limit: " << config.fileSizeLimit << " bytes" << std::endl;
+
+    return 0;
+}
+```
+
+Этот код использует `std::istringstream` для разбиения строки конфигурации на отдельные токены, а затем обрабатывает каждый токен для заполнения структуры `LoggerConfig`.
