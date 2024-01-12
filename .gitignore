@@ -1,4 +1,11 @@
 CMakeLists.txt
-/build/*
-
+build
+/boost/*
 *.docx
+test
+test.cpp
+test2.cpp
+test2
+archivator.*
+.*
+testZip*
