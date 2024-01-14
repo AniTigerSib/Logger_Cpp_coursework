@@ -5,6 +5,9 @@
 #include <iostream>
 #include <stdio.h>
 #include <zlib.h>
+#include <chrono>
+#include <exception>
+#include <iomanip>
 #include <cstddef>
 #include <fstream>
 #include <string>

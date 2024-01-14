@@ -1,7 +1,4 @@
 #include "logger.hpp"
-#include <chrono>
-#include <exception>
-#include <iomanip>
 
 using namespace logger;
 
@@ -25,12 +22,11 @@ Logger::~Logger() {
     is_logger_running = false;
     condition_variable_.notify_all();
     while (!is_logger_closed) {
-        cout << "Checked" << endl;
         this_thread::sleep_for(chrono::seconds(1));
     }
     if (file_stream_.is_open())
         file_stream_.close();
-    cout << "Closed!" << endl;
+    cout << "Logger closed!" << endl;
 }
 
 void Logger::Log(Message message) {
@@ -60,7 +56,7 @@ void Logger::LoggerThread() {
 
         Log2(message.level, message.message);
     }
-    cout << "Closed from func" << endl;
+    cout << "Logger thread closed!" << endl;
     is_logger_closed = true;
 }
 
@@ -246,8 +242,9 @@ void Logger::ChangingLogFile() {
         const char* zipname = GetZipName(base_filename);
         if (compress_one_file(filename, zipname))
             throw errors::InvalidLogOrZipFilename();
+        cout << "Archivated file " << file_number_ << endl;
         if (remove(filename)) {
-
+            cout << "Warning: Check log file" << endl;
         }
     }
 }

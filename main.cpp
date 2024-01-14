@@ -2,7 +2,7 @@
 
 int main(){
     std::string config = "file=/tmp/log.log,lev=6,date,time,trunc=300,archive";
-    std::string config2 = "std,lev=10,date,time";
+    std::string config2 = "std,lev=6,date,time";
     logger::Logger* logger_main_p = new logger::Logger(config);
     logger::Logger& logger_main = *logger_main_p;
     logger::Logger* logger_sub_p = new logger::Logger(config2);
